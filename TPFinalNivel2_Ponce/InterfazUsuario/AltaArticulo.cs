@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dominio;
 using LogicaNegocio;
+using System.IO;
+using System.Configuration;
 
 namespace InterfazUsuario
 {
     public partial class frmAltaArticulo : Form
     {
         private Articulo auxArticulo = null;
+        private OpenFileDialog buscarImagen = null;
         public frmAltaArticulo()
         {
             InitializeComponent();
@@ -139,7 +142,30 @@ namespace InterfazUsuario
                 auxArticulo.Marca = (Marca)cbMarca.SelectedItem;
                 auxArticulo.Categoria = (Categoria)cbCategoria.SelectedItem;
                 auxArticulo.ImagenUrl = txtImagenUrl.Text;
+                try
+                {
+                    if (buscarImagen != null && !(txtImagenUrl.Text.ToUpper().Contains("HTTP")))
+                    {
+                        File.Copy(buscarImagen.FileName, ConfigurationManager.AppSettings["Articulos"] + buscarImagen.SafeFileName);
+                    }
+                }
+                catch (ArgumentException)
+                {
 
+                    MessageBox.Show("Se Sobreescribio la Imagen, repetida.");
+                }
+                catch (IOException)
+                {
+
+                    MessageBox.Show("Se Sobreescribio la Imagen, que ya fue utilizada, y estaba guardada.");
+                }
+
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.ToString());
+                }
+            
                 if (txtPrecio.Text != string.Empty)
                 {
                     auxArticulo.Precio = decimal.Parse(txtPrecio.Text);
@@ -194,6 +220,19 @@ namespace InterfazUsuario
         private void txtCodigo_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnBuscarImagen_Click(object sender, EventArgs e)
+        {
+            buscarImagen = new OpenFileDialog();
+
+            buscarImagen.Filter = "jpg|*.jpg;| png|*.png";
+            
+            if (buscarImagen.ShowDialog() == DialogResult.OK)
+            {
+                txtImagenUrl.Text = buscarImagen.FileName;
+                cargarImagen(buscarImagen.FileName);
+            }
         }
     }
 }

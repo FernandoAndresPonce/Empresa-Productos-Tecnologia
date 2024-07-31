@@ -46,6 +46,7 @@ namespace InterfazUsuario
             this.pbAltaImagen = new System.Windows.Forms.PictureBox();
             this.cbMarca = new System.Windows.Forms.ComboBox();
             this.cbCategoria = new System.Windows.Forms.ComboBox();
+            this.btnBuscarImagen = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbAltaImagen)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,6 +72,7 @@ namespace InterfazUsuario
             // 
             // txtCodigo
             // 
+            this.txtCodigo.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.txtCodigo.Location = new System.Drawing.Point(129, 47);
             this.txtCodigo.MaxLength = 3;
             this.txtCodigo.Name = "txtCodigo";
@@ -198,11 +200,22 @@ namespace InterfazUsuario
             this.cbCategoria.Size = new System.Drawing.Size(205, 21);
             this.cbCategoria.TabIndex = 3;
             // 
+            // btnBuscarImagen
+            // 
+            this.btnBuscarImagen.Location = new System.Drawing.Point(337, 212);
+            this.btnBuscarImagen.Name = "btnBuscarImagen";
+            this.btnBuscarImagen.Size = new System.Drawing.Size(79, 24);
+            this.btnBuscarImagen.TabIndex = 17;
+            this.btnBuscarImagen.Text = "Importar";
+            this.btnBuscarImagen.UseVisualStyleBackColor = true;
+            this.btnBuscarImagen.Click += new System.EventHandler(this.btnBuscarImagen_Click);
+            // 
             // frmAltaArticulo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(794, 450);
+            this.Controls.Add(this.btnBuscarImagen);
             this.Controls.Add(this.cbCategoria);
             this.Controls.Add(this.cbMarca);
             this.Controls.Add(this.pbAltaImagen);
@@ -249,5 +262,6 @@ namespace InterfazUsuario
         private System.Windows.Forms.PictureBox pbAltaImagen;
         private System.Windows.Forms.ComboBox cbMarca;
         private System.Windows.Forms.ComboBox cbCategoria;
+        private System.Windows.Forms.Button btnBuscarImagen;
     }
 }

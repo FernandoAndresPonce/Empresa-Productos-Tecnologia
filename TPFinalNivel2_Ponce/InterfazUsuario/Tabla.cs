@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dominio;
 using LogicaNegocio;
+using System.Runtime.InteropServices; // Lo necesito para poder mover formulario.
 
 namespace InterfazUsuario
 {
@@ -20,6 +21,11 @@ namespace InterfazUsuario
             InitializeComponent();
             this.listaArticulos = new List<Articulo>();
         }
+        // linea de codigo para permitir que se pueda mover el formulario
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hwmd, int wmsg, int wparam, int lparam);
 
         private void Tabla_Load(object sender, EventArgs e)
         {
@@ -152,6 +158,7 @@ namespace InterfazUsuario
                         cbMarca.Items.Add("Phillips");
                         cbMarca.Items.Add("Samsung");
                         cbMarca.Items.Add("Sony");
+                        cbMarca.Items.Add("Todos");
                         break;
                     case "Celulares":
                         cbMarca.Items.Clear();
@@ -160,11 +167,13 @@ namespace InterfazUsuario
                         cbMarca.Items.Add("Motorola");
                         cbMarca.Items.Add("Samsung");
                         cbMarca.Items.Add("Sony");
+                        cbMarca.Items.Add("Todos");
                         break;
                     case "Media":
                         cbMarca.Items.Clear();
                         cbMarca.Items.Add("Apple");
                         cbMarca.Items.Add("Sony");
+                        cbMarca.Items.Add("Todos");
                         break;
                     case "Televisores":
                         cbMarca.Items.Clear();
@@ -172,6 +181,7 @@ namespace InterfazUsuario
                         cbMarca.Items.Add("Phillips");
                         cbMarca.Items.Add("Samsung");
                         cbMarca.Items.Add("Sony");
+                        cbMarca.Items.Add("Todos");
                         break;
                     default:
 
@@ -185,6 +195,7 @@ namespace InterfazUsuario
 
         }
 
+        // Busqueda de Articulo por Marca y Categoria.
         private void cbMarca_SelectedIndexChanged(object sender, EventArgs e)
         {
             string categoria = cbCategoria.SelectedItem.ToString();
@@ -205,12 +216,13 @@ namespace InterfazUsuario
                         case "Samsung":
                             listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Celulares") && x.Marca.Descripcion.Contains("Samsung"));
                             break;
+                        case "Todos":
+                            listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Celulares"));
+                            break;
                         default:
                             MessageBox.Show("Articulo NO encontrado", "Busqueda...", MessageBoxButtons.OK,MessageBoxIcon.Information);
                             listaFiltro = listaArticulos;
-
                             break;
-
                     }
                     break;
                 case "Televisores":
@@ -219,7 +231,9 @@ namespace InterfazUsuario
                         case "Sony":
                             listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Televisores") && x.Marca.Descripcion.Contains("Sony"));
                             break;
-
+                        case "Todos":
+                            listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Televisores"));
+                            break;
                         default:
                             MessageBox.Show("Articulo NO encontrado", "Busqueda...", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             listaFiltro = listaArticulos;
@@ -235,6 +249,9 @@ namespace InterfazUsuario
                         case "Sony":
                             listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Media") && x.Marca.Descripcion.Contains("Sony"));
                             break;
+                        case "Todos":
+                            listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Media"));
+                            break;
                         default:
                             MessageBox.Show("Articulo NO encontrado", "Busqueda...", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             listaFiltro = listaArticulos;
@@ -245,7 +262,15 @@ namespace InterfazUsuario
                     switch (marca)
                     {
                         case "Sony":
-                            listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Audio") && x.Marca.Descripcion.Contains("Sony"));
+                            //Esto lo he hecho adrede, para dejar preparadao en el caso que se agregue algun producto, ya dejar una linea de codigo armada.
+                            //listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Audio") && x.Marca.Descripcion.Contains("Sony"));
+                            MessageBox.Show("Articulo NO encontrado", "Busqueda...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            listaFiltro = listaArticulos;
+                            break;
+                        case "Todos":
+                            //listaFiltro = listaArticulos.FindAll(x => x.Categoria.Descripcion.Contains("Audio"));
+                            MessageBox.Show("Articulos NO encontrados", "Busqueda...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            listaFiltro = listaArticulos;
                             break;
                         default:
                             MessageBox.Show("Articulo NO encontrado", "Busqueda...", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -266,6 +291,63 @@ namespace InterfazUsuario
             eliminarColumna();
 
         }
+
+        // Tocar doble clic en laa fila para mostrar las caracteristica del producto.
+        private void dgvTabla_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            Articulo seleccionArticulo = (Articulo) dgvTabla.CurrentRow.DataBoundItem;
+            frmCaracteristica articuloDescripcion = new frmCaracteristica (seleccionArticulo);
+
+            articuloDescripcion.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
+
+        // Estirar panel izquierdo
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            if (MenuVertical.Width == 250)
+                MenuVertical.Width = 70;
+            else
+                MenuVertical.Width = 250;
+        }
+
+        private void pbClose_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void pbMaximizar_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Maximized;
+            pbrestaurar.Visible = true;
+            pbMaximizar.Visible = false;
+        }
+
+        private void pbrestaurar_Click(object sender, EventArgs e)
+        {
+            //visible false - propiedades
+            this.WindowState = FormWindowState.Normal;
+            pbrestaurar.Visible = false;
+            pbMaximizar.Visible = true;
+
+        }
+
+        private void pbMinimizar_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        // mover formulario
+        private void BarraTitulo_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
 
 
 
@@ -288,6 +370,8 @@ namespace InterfazUsuario
 
         //  **CORREGIR VALIDACION CODIGO 1 LETRA Y LOS SIGUIENTES QUE SEAN NUMEROS.
         // **CORRERGIR PRECIO , YA QUE DESPUES DE LA COMA TIENE 4 DIGITOS DEMAS.
+        // **VALIDAR CODIGO QUE NO SE REPITA.
+        // ** VER OPENFILE DIALOG PARA QUE NO SE COPY DOS VECES LA IMAGEN.
 
     }
 
