@@ -49,20 +49,28 @@ namespace InterfazUsuario
                     lblCodigoD.Text = auxArticulo.Codigo;
                     lblNombreD.Text = auxArticulo.Nombre;
                     lblMarcaD.Text = auxArticulo.Marca.Descripcion;
-                    lblPrecioD.Text = "$ " + auxArticulo.Precio.ToString();
+                    lblPrecioD.Text = "$ " + auxArticulo.Precio.ToString("0.00");
                     cargarImagen(auxArticulo.ImagenUrl);
                     txtDescripcionD.Text = auxArticulo.Descripcion;
-                    
+
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                
+
             }
         }
-           
-        
-            
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnRegresar_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
+
     }
 }

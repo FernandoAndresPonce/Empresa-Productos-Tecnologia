@@ -46,6 +46,8 @@ namespace InterfazUsuario
             cbCategoria.DisplayMember = "Descripcion";
             cbCategoria.SelectedIndex = -1;
 
+            
+
             if (auxArticulo != null)
             {
                 txtCodigo.Text = auxArticulo.Codigo;
@@ -56,7 +58,12 @@ namespace InterfazUsuario
                 
                 cargarImagen(auxArticulo.ImagenUrl);
                 txtImagenUrl.Text = auxArticulo.ImagenUrl;
-                txtPrecio.Text = auxArticulo.Precio.ToString();
+                txtPrecio.Text = auxArticulo.Precio.ToString("0.00");
+
+                label1.Text = "MODIFICAR ARTICULO";
+                this.label1.Location = new Point (360, 45);
+                btnAceptar.Text = "Modificar";
+                txtCodigo.ForeColor = Color.Black;
             }
         }
         // Solo nummeros
@@ -90,7 +97,7 @@ namespace InterfazUsuario
         private bool validarCajasVacias()
         {
 
-            if (txtCodigo.Text == string.Empty)
+            if (txtCodigo.Text == string.Empty || txtCodigo.Text == "UNA LETRA, DOS NUMEROS = X00")
             {
                 MessageBox.Show("Ingrese un Codigo, Por favor.", "Atencion...", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return true;
@@ -217,10 +224,6 @@ namespace InterfazUsuario
             this.Dispose();
         }
 
-        private void txtCodigo_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void btnBuscarImagen_Click(object sender, EventArgs e)
         {
@@ -234,5 +237,26 @@ namespace InterfazUsuario
                 cargarImagen(buscarImagen.FileName);
             }
         }
+
+        private void txtCodigo_Leave(object sender, EventArgs e)
+        {
+            if(txtCodigo.Text == string.Empty)
+            {
+                txtCodigo.Text = "UNA LETRA, DOS NUMEROS = X00";
+                txtCodigo.ForeColor = Color.Silver;
+            }
+        }
+
+        private void txtCodigo_Click(object sender, EventArgs e)
+        {
+            if (txtCodigo.Text == "UNA LETRA, DOS NUMEROS = X00")
+            {
+                txtCodigo.Text = string.Empty;
+                txtCodigo.ForeColor = Color.Black;
+            }
+
+        }
+
+
     }
 }
